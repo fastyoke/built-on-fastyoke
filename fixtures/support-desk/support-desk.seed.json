@@ -1,0 +1,20 @@
+{
+  "entities": {
+    "ticket": [
+      { "id": "tkt_login", "subject": "Cannot log in after password reset",
+        "requester_email": "aisha@acme.test", "priority": "high",
+        "body": "Reset email arrived but the new password is rejected." },
+      { "id": "tkt_invoice", "subject": "Invoice PDF is blank",
+        "requester_email": "ben@globex.test", "priority": "normal",
+        "body": "Downloaded invoice #4021 renders as an empty page." },
+      { "id": "tkt_export", "subject": "CSV export times out",
+        "requester_email": "carol@initech.test", "priority": "low",
+        "body": "Exporting >10k rows spins forever." }
+    ]
+  },
+  "jobs": [
+    { "schema": "ticket_lifecycle", "state": "New", "context": "ticket:tkt_login" },
+    { "schema": "ticket_lifecycle", "state": "Triaged", "context": "ticket:tkt_invoice" },
+    { "schema": "ticket_lifecycle", "state": "InProgress", "context": "ticket:tkt_export" }
+  ]
+}

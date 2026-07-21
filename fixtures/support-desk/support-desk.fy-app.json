@@ -1,0 +1,28 @@
+{
+  "fy_app_spec_version": "1",
+  "name": "support-desk",
+  "extension_id": "example.support-desk",
+  "entities": [
+    {
+      "name": "Ticket",
+      "fields": [
+        { "name": "subject", "type": "string" },
+        { "name": "requester_email", "type": "string" },
+        { "name": "priority", "type": "string" },
+        { "name": "body", "type": "string" }
+      ],
+      "fsm": {
+        "initial_state": "New",
+        "states": ["New", "Triaged", "InProgress", "Waiting", "Resolved", "Closed"],
+        "transitions": [
+          { "from": "New", "to": "Triaged", "event": "triage", "guard": null },
+          { "from": "Triaged", "to": "InProgress", "event": "start", "guard": null },
+          { "from": "InProgress", "to": "Waiting", "event": "wait", "guard": null },
+          { "from": "Waiting", "to": "InProgress", "event": "resume", "guard": null },
+          { "from": "InProgress", "to": "Resolved", "event": "resolve", "guard": null },
+          { "from": "Resolved", "to": "Closed", "event": "close", "guard": null }
+        ]
+      }
+    }
+  ]
+}

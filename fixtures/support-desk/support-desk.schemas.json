@@ -1,0 +1,25 @@
+{
+  "name": "ticket_lifecycle",
+  "entity_name": "ticket",
+  "schema_json": {
+    "initial_state": "New",
+    "states": {
+      "New": { "name": "New" },
+      "Triaged": { "name": "Triaged" },
+      "InProgress": { "name": "InProgress" },
+      "Waiting": { "name": "Waiting" },
+      "Resolved": { "name": "Resolved" },
+      "Closed": { "name": "Closed" }
+    },
+    "transitions": [
+      { "from": "New", "to": "Triaged", "event_type": "triage" },
+      { "from": "Triaged", "to": "InProgress", "event_type": "start" },
+      { "from": "InProgress", "to": "Waiting", "event_type": "wait" },
+      { "from": "Waiting", "to": "InProgress", "event_type": "resume" },
+      { "from": "InProgress", "to": "Resolved", "event_type": "resolve",
+        "guard": { "!!": [ { "var": "resolution" } ] } },
+      { "from": "Resolved", "to": "Closed", "event_type": "close" }
+    ],
+    "terminal_states": ["Closed"]
+  }
+}
