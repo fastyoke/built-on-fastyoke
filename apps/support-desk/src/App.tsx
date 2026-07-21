@@ -10,7 +10,6 @@ export function App() {
     <FastYokeProvider
       tenantId={cfg.tenantId}
       baseUrl={cfg.apiUrl}
-      token={cfg.token}
       fetcher={buildFetcher(cfg.token)}
     >
       <BrowserRouter>
