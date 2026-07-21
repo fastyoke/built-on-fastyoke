@@ -12,7 +12,7 @@ export function TicketDetail() {
 
   async function onTransition(targetState: string) {
     if (!job) return;
-    const eventType = eventForTarget(targetState);
+    const eventType = eventForTarget(job.current_state, targetState);
     if (!eventType) return;
     await transitionJob({ id: job.id, input: { eventType } });
     refetchJobs();

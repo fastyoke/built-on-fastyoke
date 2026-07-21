@@ -13,7 +13,7 @@ export const TICKET_SCHEMA: ViewerSchema = {
   ],
 };
 
-// Maps a target STATE (what FsmTimeline emits) to the wire event_type.
-export function eventForTarget(target: string): string | undefined {
-  return TICKET_SCHEMA.transitions?.find((t) => t.to === target)?.event_type;
+// Maps (current state, target state) to the wire event_type for that edge.
+export function eventForTarget(from: string, target: string): string | undefined {
+  return TICKET_SCHEMA.transitions?.find((t) => t.from === from && t.to === target)?.event_type;
 }
