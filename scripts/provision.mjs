@@ -14,7 +14,7 @@ async function authenticate() {
       body: { email: EMAIL, password: PASSWORD, org_name: ORG },
     });
   } catch (e) {
-    if (!String(e.message).includes('409')) throw e;
+    if (e.status !== 409) throw e;
     return api('/api/v1/auth/login', {
       method: 'POST',
       body: { email: EMAIL, password: PASSWORD },
@@ -53,7 +53,7 @@ async function main() {
     schemaId = created.id;
     console.log(`✓ created schema ${schema.name} (${schemaId})`);
   } catch (e) {
-    if (!String(e.message).includes('409')) throw e;
+    if (e.status !== 409) throw e;
     const list = await api('/api/v1/schemas', { token, tenantId });
     schemaId = (Array.isArray(list) ? list : list.records ?? [])
       .find((s) => s.name === schema.name && s.is_active)?.id;
@@ -69,7 +69,7 @@ async function main() {
         `/api/v1/tenant/entities/${kind}?filterField=subject&filterValue=${encodeURIComponent(payload.subject)}`,
         { token },
       );
-      const found = (existing.records ?? [])[0];
+      const found = (existing.records ?? []).find((r) => r?.data_payload?.subject === payload.subject);
       if (found) { idMap[`${kind}:${fixtureId}`] = found.id; continue; }
       const made = await api(`/api/v1/tenant/entities/${kind}`, {
         method: 'POST', token, tenantId, body: payload,
@@ -80,18 +80,30 @@ async function main() {
   console.log(`✓ seeded ${Object.keys(idMap).length} entity records`);
 
   // 3) Spawn jobs and advance each to its seeded state along the transition path.
-  const stateOrder = ['New', 'Triaged', 'InProgress', 'Waiting', 'Resolved', 'Closed'];
-  const eventFor = { Triaged: 'triage', InProgress: 'start', Waiting: 'wait', Resolved: 'resolve', Closed: 'close' };
+  // Event path from the initial state to each seedable state, using only edges
+  // that exist in ticket_lifecycle. Reaching Resolved/Closed also needs a
+  // `resolution` value on the ticket to satisfy the resolve guard; the current
+  // seed only goes as deep as InProgress, so those paths are here for
+  // completeness and exercised only if a future seed uses them.
+  const PATH_TO = {
+    New: [],
+    Triaged: ['triage'],
+    InProgress: ['triage', 'start'],
+    Waiting: ['triage', 'start', 'wait'],
+    Resolved: ['triage', 'start', 'resolve'],
+    Closed: ['triage', 'start', 'resolve', 'close'],
+  };
   for (const job of seed.jobs) {
+    const path = PATH_TO[job.state];
+    if (!path) throw new Error(`Unknown seed state "${job.state}" for schema ${job.schema}`);
     const contextRecordId = idMap[job.context];
     const spawned = await api('/api/v1/tenant/jobs', {
       method: 'POST', token, tenantId, body: { schema_id: schemaId, context_record_id: contextRecordId },
     });
-    const target = stateOrder.indexOf(job.state);
-    for (let i = 1; i <= target; i++) {
+    for (const event_type of path) {
       await api(`/api/v1/tenant/jobs/${spawned.id}/transition`, {
         method: 'POST', token, tenantId,
-        body: { event_type: eventFor[stateOrder[i]], context_record_id: contextRecordId },
+        body: { event_type, context_record_id: contextRecordId },
       });
     }
   }

@@ -13,7 +13,9 @@ export async function api(path, { method = 'GET', token, body, tenantId } = {}) 
   let json;
   try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
   if (!res.ok) {
-    throw new Error(`${method} ${path} → ${res.status}: ${text.slice(0, 300)}`);
+    const err = new Error(`${method} ${path} → ${res.status}: ${text.slice(0, 300)}`);
+    err.status = res.status;
+    throw err;
   }
   return json;
 }
