@@ -1,0 +1,22 @@
+services:
+  backend:
+    image: fastyoke/backend:local
+    ports:
+      - "8080:8080"
+    environment:
+      DEPLOY_ENV: "sandbox"
+      DATABASE_URL: "sqlite:///data/fastyoke.db?mode=rwc"
+      TENANT_DATA_DIR: "/data/tenants"
+      PORT: "8080"
+      RUST_LOG: "fastyoke=info,tower_http=warn"
+    volumes:
+      - fastyoke-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
+volumes:
+  fastyoke-data:
