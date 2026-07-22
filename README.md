@@ -16,7 +16,7 @@ pnpm dev               # boots the app dev servers
 | App | Port | Hero primitive | Status |
 |-----|------|----------------|--------|
 | [Support Desk](apps/support-desk) | 5201 | FSM guards · forms · realtime | skeleton |
-| Issue Board | 5202 | authored custom:* extension block | planned |
+| [Issue Board](apps/issue-board) | 5202 | authored custom:* extension block | built |
 | Last-Mile Dispatch | 5203 | FSM depth (self-loops, admin cancel) | planned |
 | Field Service | 5204 | PDF forms · e-sign · line items | planned |
 
