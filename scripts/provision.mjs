@@ -12,6 +12,7 @@ const APPS = [
     fixtures: 'fixtures/issue-board/issue-board',
     extension: { dir: 'extensions/kanban-block', manifest: 'manifest.json', bundle: 'dist/bundle.mjs' },
   },
+  { fixtures: 'fixtures/last-mile-dispatch/last-mile-dispatch' },
 ];
 
 async function authenticate() {
