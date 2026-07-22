@@ -1,0 +1,19 @@
+{
+  "id": "example.kanban-board",
+  "version": "1.0.0",
+  "components": [
+    {
+      "name": "KanbanBoard",
+      "block_type": "custom:kanban_board",
+      "display_name": "Kanban Board",
+      "default_config": {
+        "entity_kind": "issue",
+        "schema_entity": "issue",
+        "columns": ["Backlog", "Todo", "Doing", "Review", "Done"]
+      }
+    }
+  ],
+  "pages": [],
+  "required_scopes": ["data:read", "data:write", "workflow:read", "workflow:execute"],
+  "fastyoke_sdk": ">=0.3.0 <1.0.0"
+}
