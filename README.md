@@ -18,7 +18,7 @@ pnpm dev               # boots the app dev servers
 | [Support Desk](apps/support-desk) | 5201 | FSM guards · forms · realtime | skeleton |
 | [Issue Board](apps/issue-board) | 5202 | authored custom:* extension block | built |
 | [Last-Mile Dispatch](apps/last-mile-dispatch) | 5203 | FSM depth (self-loops, admin cancel) | built |
-| Field Service | 5204 | PDF forms · e-sign · line items | planned |
+| [Field Service](apps/field-service) | 5204 | e-signature · gated transition (Part 11) | built |
 
 ## How each app is built
 Each app ships a recipe: `fixtures/<app>/*.fy-app.json` (declarative spec),
