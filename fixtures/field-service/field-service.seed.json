@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "work_order": [
+      { "id": "wo_501", "reference": "WO-501", "customer": "Harbor Cafe", "site_address": "14 Harbor St",
+        "technician": "Rosa", "description": "Espresso machine not heating" },
+      { "id": "wo_502", "reference": "WO-502", "customer": "Globex HQ", "site_address": "88 Market Ave",
+        "technician": "Sam", "description": "HVAC quarterly service" },
+      { "id": "wo_503", "reference": "WO-503", "customer": "Cedar Clinic", "site_address": "3 Cedar Ln",
+        "technician": "Priya", "description": "Backup generator load test" },
+      { "id": "wo_504", "reference": "WO-504", "customer": "Elm Studios", "site_address": "40 Elm Rd",
+        "technician": "Rosa", "description": "Network rack re-cabling" },
+      { "id": "wo_505", "reference": "WO-505", "customer": "Union Market", "site_address": "9 Union Sq",
+        "technician": "Deja", "description": "Walk-in freezer alarm" }
+    ]
+  },
+  "jobs": [
+    { "schema": "work_order_lifecycle", "state": "Requested", "context": "work_order:wo_501" },
+    { "schema": "work_order_lifecycle", "state": "Requested", "context": "work_order:wo_502" },
+    { "schema": "work_order_lifecycle", "state": "Scheduled", "context": "work_order:wo_503" },
+    { "schema": "work_order_lifecycle", "state": "OnSite",    "context": "work_order:wo_504" },
+    { "schema": "work_order_lifecycle", "state": "OnSite",    "context": "work_order:wo_505" }
+  ]
+}

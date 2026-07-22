@@ -1,0 +1,21 @@
+{
+  "name": "work_order_lifecycle",
+  "entity_name": "work_order",
+  "schema_json": {
+    "initial_state": "Requested",
+    "states": {
+      "Requested": { "name": "Requested" },
+      "Scheduled": { "name": "Scheduled" },
+      "OnSite": { "name": "OnSite" },
+      "Completed": { "name": "Completed" },
+      "Closed": { "name": "Closed" }
+    },
+    "transitions": [
+      { "from": "Requested", "to": "Scheduled", "event_type": "schedule" },
+      { "from": "Scheduled", "to": "OnSite", "event_type": "arrive" },
+      { "from": "OnSite", "to": "Completed", "event_type": "sign_off", "requires_signature": true },
+      { "from": "Completed", "to": "Closed", "event_type": "close" }
+    ],
+    "terminal_states": ["Closed"]
+  }
+}

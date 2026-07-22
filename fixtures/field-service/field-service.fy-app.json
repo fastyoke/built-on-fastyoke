@@ -1,0 +1,27 @@
+{
+  "fy_app_spec_version": "1",
+  "name": "field-service",
+  "extension_id": "example.field-service",
+  "entities": [
+    {
+      "name": "WorkOrder",
+      "fields": [
+        { "name": "reference", "type": "string" },
+        { "name": "customer", "type": "string" },
+        { "name": "site_address", "type": "string" },
+        { "name": "technician", "type": "string" },
+        { "name": "description", "type": "string" }
+      ],
+      "fsm": {
+        "initial_state": "Requested",
+        "states": ["Requested", "Scheduled", "OnSite", "Completed", "Closed"],
+        "transitions": [
+          { "from": "Requested", "to": "Scheduled", "event": "schedule", "guard": null },
+          { "from": "Scheduled", "to": "OnSite", "event": "arrive", "guard": null },
+          { "from": "OnSite", "to": "Completed", "event": "sign_off", "guard": null },
+          { "from": "Completed", "to": "Closed", "event": "close", "guard": null }
+        ]
+      }
+    }
+  ]
+}
