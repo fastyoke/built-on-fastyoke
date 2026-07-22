@@ -1,11 +1,17 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useEntities, useJobs } from '@fastyoke/sdk';
+import { useEntities, useJobs, useFastYoke } from '@fastyoke/sdk';
 import { MapPanel, type MapMarker } from '../MapPanel';
 import { stateColor } from '../dispatch';
 
 export function Board() {
+  const { schemas } = useFastYoke();
+  const [schemaId, setSchemaId] = useState<string | undefined>();
+  useEffect(() => {
+    schemas.list({ entityName: 'delivery' }).then((l) => setSchemaId(l.find((s) => s.is_active)?.id));
+  }, [schemas]);
   const { data: deliveries, loading, error } = useEntities('delivery', { pageSize: 100 });
-  const { data: jobs } = useJobs({});
+  const { data: jobs } = useJobs(schemaId ? { schemaId } : {});
 
   if (loading) return <div>Loading deliveries…</div>;
   if (error) return <div style={{ color: 'crimson' }}>Error: {error.message}</div>;

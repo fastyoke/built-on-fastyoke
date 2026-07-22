@@ -10,6 +10,7 @@ export function DeliveryDetail() {
   const { id = '' } = useParams();
   const { data: delivery } = useEntity('delivery', id);
   const { data: jobs, refetch: refetchJobs } = useJobs({ entityId: id });
+  // one workflow job per delivery in this app; take the first
   const job = jobs?.[0];
   const { data: history, refetch: refetchHistory } = useJobHistory(job?.id ?? '', { realtime: !!job });
   const { transitionJob, loading: transitioning } = useTransitionJob();
@@ -40,7 +41,7 @@ export function DeliveryDetail() {
     }
   }
 
-  const checkIns = (history ?? []).filter((h) => h.from_state === h.to_state);
+  const checkIns = (history ?? []).filter((h) => h.event_type === 'check_in');
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
@@ -60,11 +61,11 @@ export function DeliveryDetail() {
         )}
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
           {actions.map((a) => (
-            <button key={a.event_type} onClick={() => fire(a.event_type)} disabled={transitioning}>
+            <button key={a.event_type} onClick={() => fire(a.event_type)} disabled={transitioning || overriding}>
               {a.selfLoop ? `${a.event_type} (self-loop)` : `${a.event_type} → ${a.to}`}
             </button>
           ))}
-          <button onClick={() => setShowOverride(true)} style={{ marginLeft: 'auto', color: '#bf2600' }}>
+          <button onClick={() => setShowOverride(true)} disabled={transitioning || overriding} style={{ marginLeft: 'auto', color: '#bf2600' }}>
             Override…
           </button>
         </div>
