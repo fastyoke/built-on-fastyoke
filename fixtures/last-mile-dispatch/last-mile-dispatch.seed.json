@@ -1,0 +1,20 @@
+{
+  "entities": {
+    "delivery": [
+      { "id": "dlv_101", "reference": "DLV-101", "address": "14 Harbor St", "driver": "Rosa",  "x": 20, "y": 30 },
+      { "id": "dlv_102", "reference": "DLV-102", "address": "88 Market Ave", "driver": "Sam",  "x": 55, "y": 18 },
+      { "id": "dlv_103", "reference": "DLV-103", "address": "3 Cedar Ln",    "driver": "Priya","x": 72, "y": 60 },
+      { "id": "dlv_104", "reference": "DLV-104", "address": "40 Elm Rd",     "driver": "Rosa", "x": 35, "y": 75 },
+      { "id": "dlv_105", "reference": "DLV-105", "address": "9 Union Sq",    "driver": "Deja", "x": 60, "y": 45 },
+      { "id": "dlv_106", "reference": "DLV-106", "address": "27 Pine Way",   "driver": "Sam",  "x": 82, "y": 25 }
+    ]
+  },
+  "jobs": [
+    { "schema": "delivery_lifecycle", "state": "Created",   "context": "delivery:dlv_101" },
+    { "schema": "delivery_lifecycle", "state": "Assigned",  "context": "delivery:dlv_102" },
+    { "schema": "delivery_lifecycle", "state": "PickedUp",  "context": "delivery:dlv_103" },
+    { "schema": "delivery_lifecycle", "state": "EnRoute",   "context": "delivery:dlv_104" },
+    { "schema": "delivery_lifecycle", "state": "EnRoute",   "context": "delivery:dlv_105" },
+    { "schema": "delivery_lifecycle", "state": "Delivered", "context": "delivery:dlv_106" }
+  ]
+}

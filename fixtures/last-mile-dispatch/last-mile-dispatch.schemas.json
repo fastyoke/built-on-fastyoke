@@ -1,0 +1,23 @@
+{
+  "name": "delivery_lifecycle",
+  "entity_name": "delivery",
+  "schema_json": {
+    "initial_state": "Created",
+    "states": {
+      "Created": { "name": "Created" },
+      "Assigned": { "name": "Assigned" },
+      "PickedUp": { "name": "PickedUp" },
+      "EnRoute": { "name": "EnRoute" },
+      "Delivered": { "name": "Delivered" }
+    },
+    "transitions": [
+      { "from": "Created", "to": "Assigned", "event_type": "assign" },
+      { "from": "Assigned", "to": "Assigned", "event_type": "reassign" },
+      { "from": "Assigned", "to": "PickedUp", "event_type": "pick_up" },
+      { "from": "PickedUp", "to": "EnRoute", "event_type": "depart" },
+      { "from": "EnRoute", "to": "EnRoute", "event_type": "check_in" },
+      { "from": "EnRoute", "to": "Delivered", "event_type": "deliver" }
+    ],
+    "terminal_states": ["Delivered"]
+  }
+}

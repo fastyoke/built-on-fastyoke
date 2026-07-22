@@ -1,0 +1,29 @@
+{
+  "fy_app_spec_version": "1",
+  "name": "last-mile-dispatch",
+  "extension_id": "example.last-mile-dispatch",
+  "entities": [
+    {
+      "name": "Delivery",
+      "fields": [
+        { "name": "reference", "type": "string" },
+        { "name": "address", "type": "string" },
+        { "name": "driver", "type": "string" },
+        { "name": "x", "type": "number" },
+        { "name": "y", "type": "number" }
+      ],
+      "fsm": {
+        "initial_state": "Created",
+        "states": ["Created", "Assigned", "PickedUp", "EnRoute", "Delivered"],
+        "transitions": [
+          { "from": "Created", "to": "Assigned", "event": "assign", "guard": null },
+          { "from": "Assigned", "to": "Assigned", "event": "reassign", "guard": null },
+          { "from": "Assigned", "to": "PickedUp", "event": "pick_up", "guard": null },
+          { "from": "PickedUp", "to": "EnRoute", "event": "depart", "guard": null },
+          { "from": "EnRoute", "to": "EnRoute", "event": "check_in", "guard": null },
+          { "from": "EnRoute", "to": "Delivered", "event": "deliver", "guard": null }
+        ]
+      }
+    }
+  ]
+}
