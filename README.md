@@ -21,10 +21,28 @@ pnpm dev               # boots the app dev servers
 | [Field Service](apps/field-service) | 5204 | e-signature · gated transition (Part 11) | built |
 
 ## How each app is built
-Each app ships a recipe: `fixtures/<app>/*.fy-app.json` (declarative spec),
-`*.schemas.json` (executable workflow), `*.seed.json` (demo data), and a
-walkthrough in `docs/<app>.md`.
 
-## Note on the SDK dependency
-The published `@fastyoke/sdk` (0.3.0) does not declare a few transitive UI
-dependencies it imports (`reactflow`, `elkjs`), so each app lists them directly.
+Each app ships a **recipe**: `fixtures/<app>/*.fy-app.json` (declarative spec),
+`*.schemas.json` (executable workflow), `*.seed.json` (demo data), plus a
+walkthrough and an app README.
+
+| App | Hero primitive | How it was built | README |
+|-----|----------------|------------------|--------|
+| Support Desk | ticket FSM + timeline (forms/realtime pending) | [docs/support-desk.md](docs/support-desk.md) | [readme](apps/support-desk/README.md) |
+| Issue Board | authored `custom:kanban_board` **extension** loaded via `ExtensionRegistry`; drag = optimistic transition | [docs/issue-board.md](docs/issue-board.md) | [readme](apps/issue-board/README.md) |
+| Last-Mile Dispatch | **FSM depth** — `from == to` self-loops + admin cancel override + SVG map | [docs/last-mile-dispatch.md](docs/last-mile-dispatch.md) | [readme](apps/last-mile-dispatch/README.md) |
+| Field Service | **21 CFR Part 11 e-signature** gated transition (sign-off) | [docs/field-service.md](docs/field-service.md) | [readme](apps/field-service/README.md) |
+
+## Design notes
+
+- **Runtime** — the apps run against the real FastYoke backend booted locally in
+  sandbox mode (`docker compose up`), not a cloud tenant. `provision` self-serve-
+  signs-up a demo tenant, installs each app's schema + seed (and uploads the Issue
+  Board extension), and writes `.env.local` for the dev servers.
+- **SDK dependency** — the published `@fastyoke/sdk` (0.3.0) doesn't declare a few
+  transitive UI dependencies it imports (`reactflow`, `elkjs`), so each app lists
+  them directly.
+- **Out of scope (v1)** — line items + payments: the backend supports those only on
+  its built-in `order`/`quote`/`pos_transaction` entities (a compile-time registry),
+  so they aren't reachable for a bespoke `work_order`. A v2 could add Inventory/WMS
+  with a cross-app bridge into Dispatch.
