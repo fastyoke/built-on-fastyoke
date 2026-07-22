@@ -1,0 +1,20 @@
+{
+  "entities": {
+    "issue": [
+      { "id": "iss_login", "title": "OAuth login drops the return URL", "assignee": "aisha", "points": 3 },
+      { "id": "iss_darkmode", "title": "Dark mode flicker on first paint", "assignee": "ben", "points": 2 },
+      { "id": "iss_export", "title": "CSV export is missing the header row", "assignee": "carol", "points": 1 },
+      { "id": "iss_search", "title": "Global search ignores archived items", "assignee": "dan", "points": 5 },
+      { "id": "iss_a11y", "title": "Board columns need ARIA roles", "assignee": "aisha", "points": 2 },
+      { "id": "iss_perf", "title": "Board re-renders on every keystroke", "assignee": "ben", "points": 3 }
+    ]
+  },
+  "jobs": [
+    { "schema": "issue_lifecycle", "state": "Backlog", "context": "issue:iss_login" },
+    { "schema": "issue_lifecycle", "state": "Todo", "context": "issue:iss_darkmode" },
+    { "schema": "issue_lifecycle", "state": "Todo", "context": "issue:iss_search" },
+    { "schema": "issue_lifecycle", "state": "Doing", "context": "issue:iss_export" },
+    { "schema": "issue_lifecycle", "state": "Review", "context": "issue:iss_a11y" },
+    { "schema": "issue_lifecycle", "state": "Done", "context": "issue:iss_perf" }
+  ]
+}

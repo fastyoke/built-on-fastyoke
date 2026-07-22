@@ -1,0 +1,24 @@
+{
+  "name": "issue_lifecycle",
+  "entity_name": "issue",
+  "schema_json": {
+    "initial_state": "Backlog",
+    "states": {
+      "Backlog": { "name": "Backlog" },
+      "Todo": { "name": "Todo" },
+      "Doing": { "name": "Doing" },
+      "Review": { "name": "Review" },
+      "Done": { "name": "Done" }
+    },
+    "transitions": [
+      { "from": "Backlog", "to": "Todo", "event_type": "plan" },
+      { "from": "Todo", "to": "Backlog", "event_type": "defer" },
+      { "from": "Todo", "to": "Doing", "event_type": "start" },
+      { "from": "Doing", "to": "Todo", "event_type": "block" },
+      { "from": "Doing", "to": "Review", "event_type": "submit" },
+      { "from": "Review", "to": "Doing", "event_type": "reject" },
+      { "from": "Review", "to": "Done", "event_type": "approve" }
+    ],
+    "terminal_states": ["Done"]
+  }
+}

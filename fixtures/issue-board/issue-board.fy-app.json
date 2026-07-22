@@ -1,0 +1,28 @@
+{
+  "fy_app_spec_version": "1",
+  "name": "issue-board",
+  "extension_id": "example.issue-board",
+  "entities": [
+    {
+      "name": "Issue",
+      "fields": [
+        { "name": "title", "type": "string" },
+        { "name": "assignee", "type": "string" },
+        { "name": "points", "type": "number" }
+      ],
+      "fsm": {
+        "initial_state": "Backlog",
+        "states": ["Backlog", "Todo", "Doing", "Review", "Done"],
+        "transitions": [
+          { "from": "Backlog", "to": "Todo", "event": "plan", "guard": null },
+          { "from": "Todo", "to": "Backlog", "event": "defer", "guard": null },
+          { "from": "Todo", "to": "Doing", "event": "start", "guard": null },
+          { "from": "Doing", "to": "Todo", "event": "block", "guard": null },
+          { "from": "Doing", "to": "Review", "event": "submit", "guard": null },
+          { "from": "Review", "to": "Doing", "event": "reject", "guard": null },
+          { "from": "Review", "to": "Done", "event": "approve", "guard": null }
+        ]
+      }
+    }
+  ]
+}
