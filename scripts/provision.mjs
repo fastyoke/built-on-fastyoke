@@ -13,6 +13,7 @@ const APPS = [
     extension: { dir: 'extensions/kanban-block', manifest: 'manifest.json', bundle: 'dist/bundle.mjs' },
   },
   { fixtures: 'fixtures/last-mile-dispatch/last-mile-dispatch' },
+  { fixtures: 'fixtures/field-service/field-service' },
 ];
 
 async function authenticate() {
