@@ -6,6 +6,7 @@ export default defineConfig({
   webServer: [
     { command: 'pnpm --filter @gallery/support-desk dev', url: 'http://localhost:5201', reuseExistingServer: true, timeout: 60_000 },
     { command: 'pnpm --filter @gallery/issue-board dev', url: 'http://localhost:5202', reuseExistingServer: true, timeout: 60_000 },
+    { command: 'pnpm --filter @gallery/last-mile-dispatch dev', url: 'http://localhost:5203', reuseExistingServer: true, timeout: 60_000 },
   ],
   use: { baseURL: 'http://localhost:5201' },
 });
