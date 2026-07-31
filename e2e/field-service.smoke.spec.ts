@@ -1,15 +1,14 @@
 import { test, expect } from '@playwright/test';
 
-// KNOWN BUG (tracked): the UI flow below is correct (it drives the whole
-// signature ceremony), but the signed transition fails with `401 unauthorized`
-// against the current sandbox backend even though the demo password is valid
-// (POST /auth/login with it succeeds). Root cause is backend-side: the
-// signed-transition re-auth in jobs.rs does
+// FIXED in the backend, pending a released image (fastyoke2 PR #381): the signed
+// transition used to fail with `401 unauthorized` even with a valid password
+// (POST /auth/login succeeds), because the re-auth in jobs.rs did
 //   SELECT name, password_hash FROM users WHERE tenant_id = ? AND id = ?
-// then verify_password — and that tenant-scoped lookup no longer matches the
-// sandbox signup user (identity resolution moved users platform-side), so the
-// work order stays OnSite and the dialog surfaces "Error: 401 unauthorized".
-// Un-fixme once the backend re-auth path resolves the signer correctly.
+// — but users are platform-global and the sandbox signup stubs users.tenant_id
+// to '', so that lookup returned 0 rows. Verified directly: the signer's row has
+// tenant_id='', the old query matches 0 rows, `WHERE id = ?` matches 1. PR #381
+// changes the query to look the signer up by id alone.
+// Un-fixme once the gallery runs against a backend image that includes the fix.
 test.fixme('signs off an on-site work order with an electronic signature', async ({ page }) => {
   await page.goto('http://localhost:5204');
   await page.getByRole('link', { name: 'WO-504' }).first().click(); // seeded OnSite
