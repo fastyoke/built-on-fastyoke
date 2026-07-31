@@ -1,9 +1,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { api, API_URL } from './lib/fastyoke-admin-client.mjs';
 
-const EMAIL = 'demo@built-on-fastyoke.invalid';
-const PASSWORD = 'DemoPassword123!';
-const ORG = 'Built on FastYoke Demo';
+// Credentials default to a throwaway demo identity (for the local sandbox), but
+// can be overridden to provision into a real hosted FastYoke tenant.
+const EMAIL = process.env.FY_EMAIL ?? 'demo@built-on-fastyoke.invalid';
+const PASSWORD = process.env.FY_PASSWORD ?? 'DemoPassword123!';
+const ORG = process.env.FY_ORG ?? 'Built on FastYoke Demo';
 
 // App registry: each app installs a schema + seed; some also upload an extension.
 const APPS = [

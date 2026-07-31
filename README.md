@@ -1,7 +1,10 @@
 # built-on-fastyoke
 
-An open-source gallery of complex apps built on the FastYoke SDK. Everything runs
-locally against a real FastYoke backend — **no cloud account**.
+An open-source gallery of complex apps built on the FastYoke SDK. By default
+everything runs locally against a real FastYoke backend — **no cloud account
+required** — but the same app code runs unchanged against a
+[cloud-hosted instance](#point-at-a-cloud-hosted-fastyoke) by pointing at a
+different URL.
 
 ## Quick start
 ```bash
@@ -13,6 +16,46 @@ pnpm dev               # boots the app dev servers
 
 The backend is the prebuilt, multi-arch **`ghcr.io/fastyoke/backend:sandbox`**
 image (amd64 + arm64) — `docker compose up` pulls it, no local build required.
+
+## Point at a cloud-hosted FastYoke
+
+Nothing in these apps is tied to the local backend. Each app reads exactly three
+env vars from a root `.env.local`, so repointing at a hosted FastYoke — the
+[managed cloud](https://www.fastyoke.io/pricing) or your own On-Prem deployment —
+is just a matter of aiming those at a different base URL:
+
+```dotenv
+# .env.local
+VITE_FASTYOKE_API_URL=https://app.fastyoke.io   # your hosted instance's base URL
+VITE_FASTYOKE_TENANT_ID=<your-tenant-id>
+VITE_FASTYOKE_TOKEN=<a-bearer-token-for-that-tenant>
+```
+
+There's no local backend in this mode, so **skip `pnpm backend:up`**. Two ways to
+get there:
+
+**A. Provision into your hosted tenant** — installs each app's schema + seed (and
+uploads the Issue Board extension) into your cloud tenant, then writes `.env.local`
+for you:
+
+```bash
+pnpm install
+FASTYOKE_API_URL=https://app.fastyoke.io \
+  FY_EMAIL=you@example.com FY_PASSWORD='…' FY_ORG='My Org' \
+  pnpm provision
+pnpm dev
+```
+
+`provision` signs in (or signs up on first run) with those credentials and targets
+`FASTYOKE_API_URL` instead of the local backend.
+
+**B. Bring your own tenant** — if the schemas are already installed on your
+instance and you have a token (e.g. a `fy_pat_…` API token from the FastYoke admin
+UI), just write the three vars into `.env.local` yourself and run `pnpm dev` — no
+`backend:up`, no `provision`.
+
+> Same schemas, same SDK, same app code — only `VITE_FASTYOKE_API_URL` changes
+> between local sandbox, managed cloud, and On-Prem.
 
 ## Apps
 | App | Port | Hero primitive | Status |
@@ -37,10 +80,12 @@ walkthrough and an app README.
 
 ## Design notes
 
-- **Runtime** — the apps run against the real FastYoke backend booted locally in
-  sandbox mode (`docker compose up`), not a cloud tenant. `provision` self-serve-
-  signs-up a demo tenant, installs each app's schema + seed (and uploads the Issue
-  Board extension), and writes `.env.local` for the dev servers.
+- **Runtime** — by default the apps run against the real FastYoke backend booted
+  locally in sandbox mode (`docker compose up`); `provision` self-serve-signs-up a
+  demo tenant, installs each app's schema + seed (and uploads the Issue Board
+  extension), and writes `.env.local` for the dev servers. The same apps run
+  against a hosted instance too — see
+  [Point at a cloud-hosted FastYoke](#point-at-a-cloud-hosted-fastyoke).
 - **SDK dependency** — the published `@fastyoke/sdk` (0.3.0) doesn't declare a few
   transitive UI dependencies it imports (`reactflow`, `elkjs`), so each app lists
   them directly.
