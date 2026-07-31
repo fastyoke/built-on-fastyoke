@@ -18,14 +18,23 @@ const APPS = [
 
 async function authenticate() {
   try {
-    return await api('/api/v1/auth/signup', { method: 'POST', body: { email: EMAIL, password: PASSWORD, org_name: ORG } });
+    return await api('/api/v1/auth/signup', { method: 'POST', body: { email: EMAIL, password: PASSWORD, org_name: ORG, org_legal_name: ORG, country: 'US', turnstile_token: 'sandbox' } });
   } catch (e) {
     if (e.status !== 409) throw e;
     return api('/api/v1/auth/login', { method: 'POST', body: { email: EMAIL, password: PASSWORD } });
   }
 }
 const pickToken = (a) => a.token ?? a.access_token ?? a.jwt ?? (() => { throw new Error(`no token: ${JSON.stringify(a).slice(0,200)}`); })();
-const pickTenant = (a) => a.tenant_id ?? a.tenant?.id ?? a.tenantId ?? (() => { throw new Error(`no tenant: ${JSON.stringify(a).slice(0,200)}`); })();
+const pickTenant = (a) => a.tenant_id ?? a.tenant?.id ?? a.tenantId ?? (() => {
+  const jwt = a.token ?? a.access_token ?? a.jwt;
+  if (jwt) {
+    try {
+      const claims = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64').toString('utf8'));
+      if (claims.tenant_id) return claims.tenant_id;
+    } catch { /* fall through */ }
+  }
+  throw new Error(`no tenant: ${JSON.stringify(a).slice(0,200)}`);
+})();
 
 /** BFS the transition graph from initial_state to targetState; returns the event_type sequence. */
 function eventPath(schemaJson, targetState) {
@@ -49,14 +58,14 @@ function eventPath(schemaJson, targetState) {
 
 async function installSchema(schema, token, tenantId) {
   try {
-    const created = await api('/api/v1/schemas', {
+    const created = await api('/api/v1/tenant/schemas', {
       method: 'POST', token, tenantId,
       body: { name: schema.name, entity_name: schema.entity_name, schema_json: schema.schema_json },
     });
     return created.id;
   } catch (e) {
     if (e.status !== 409) throw e;
-    const list = await api('/api/v1/schemas', { token, tenantId });
+    const list = await api('/api/v1/tenant/schemas', { token, tenantId });
     return (Array.isArray(list) ? list : list.records ?? []).find((s) => s.name === schema.name && s.is_active)?.id;
   }
 }
@@ -68,10 +77,10 @@ async function seedRecords(seed, token, tenantId) {
       const { id: fixtureId, ...payload } = rec;
       const key = payload.subject ?? payload.title ?? fixtureId;
       const field = payload.subject !== undefined ? 'subject' : 'title';
-      const existing = await api(`/api/v1/tenant/entities/${kind}?filterField=${field}&filterValue=${encodeURIComponent(key)}`, { token });
+      const existing = await api(`/api/v1/tenant/entities/${kind}?filterField=${field}&filterValue=${encodeURIComponent(key)}`, { token, tenantId });
       const found = (existing.records ?? []).find((r) => r?.data_payload?.[field] === key);
       idMap[`${kind}:${fixtureId}`] = found ? found.id
-        : (await api(`/api/v1/tenant/entities/${kind}`, { method: 'POST', token, tenantId, body: payload })).id;
+        : (await api(`/api/v1/tenant/entities/${kind}`, { method: 'POST', token, tenantId, body: { data_payload: payload } })).id;
     }
   }
   return idMap;
