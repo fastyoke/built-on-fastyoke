@@ -4,7 +4,11 @@ const API = process.env.FASTYOKE_API_URL ?? 'http://localhost:8080';
 export async function api(path, { method = 'GET', token, body, tenantId } = {}) {
   const headers = { 'Content-Type': 'application/json' };
   if (token) headers.authorization = `Bearer ${token}`;
-  const res = await fetch(`${API}${path}`, {
+  // Tenant-scoped endpoints require tenant_id as a query param (GET) as well
+  // as in the body (POST/PUT). Append it to the query whenever we have it.
+  let url = `${API}${path}`;
+  if (tenantId) url += `${path.includes('?') ? '&' : '?'}tenant_id=${encodeURIComponent(tenantId)}`;
+  const res = await fetch(url, {
     method,
     headers,
     body: body ? JSON.stringify(tenantId ? { tenant_id: tenantId, ...body } : body) : undefined,
