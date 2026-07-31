@@ -75,8 +75,14 @@ async function seedRecords(seed, token, tenantId) {
   for (const [kind, records] of Object.entries(seed.entities)) {
     for (const rec of records) {
       const { id: fixtureId, ...payload } = rec;
-      const key = payload.subject ?? payload.title ?? fixtureId;
-      const field = payload.subject !== undefined ? 'subject' : 'title';
+      // Natural dedup key so re-provisioning is idempotent: subject
+      // (support-desk), title (issue-board), or reference (dispatch,
+      // field-service). Falls back to the fixture id when none is present.
+      const field = payload.subject !== undefined ? 'subject'
+        : payload.title !== undefined ? 'title'
+        : payload.reference !== undefined ? 'reference'
+        : 'subject';
+      const key = payload[field] ?? fixtureId;
       const existing = await api(`/api/v1/tenant/entities/${kind}?filterField=${field}&filterValue=${encodeURIComponent(key)}`, { token, tenantId });
       const found = (existing.records ?? []).find((r) => r?.data_payload?.[field] === key);
       idMap[`${kind}:${fixtureId}`] = found ? found.id
@@ -104,6 +110,9 @@ async function uploadExtension(ext, token, tenantId) {
   form.set('manifest', manifest);
   form.set('bundle', new Blob([bundle], { type: 'text/javascript' }), 'bundle.mjs');
   const res = await fetch(`${API_URL}/api/v1/tenant/extensions`, { method: 'POST', headers: { authorization: `Bearer ${token}` }, body: form });
+  // 409 = this version is already uploaded for the tenant; provision is
+  // idempotent, so treat that as success (same as installSchema's 409 path).
+  if (res.status === 409) { console.log(`  = extension ${ext.dir} already uploaded`); return; }
   if (!res.ok) throw new Error(`extension upload → ${res.status}: ${(await res.text()).slice(0, 300)}`);
   console.log(`  ✓ uploaded extension ${ext.dir}`);
 }
