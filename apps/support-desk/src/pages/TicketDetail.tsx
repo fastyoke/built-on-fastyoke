@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { FsmTimeline, useEntity, useJobs, useJobHistory, useTransitionJob } from '@fastyoke/sdk';
 import { TICKET_SCHEMA, eventForTarget } from '../schema';
 
@@ -18,28 +18,39 @@ export function TicketDetail() {
     refetchJobs();
   }
 
-  if (!ticket) return <div>Loading…</div>;
+  if (!ticket) return <div className="loading">Loading…</div>;
 
+  const body = String(ticket.data_payload.body ?? '');
   return (
     <div>
-      <h1>{String(ticket.data_payload.subject ?? '')}</h1>
-      <p>{String(ticket.data_payload.body ?? '')}</p>
+      <Link to="/" className="crumb">Tickets</Link>
+      <div className="page-head">
+        <h1 className="page-title">{String(ticket.data_payload.subject ?? '')}</h1>
+        <p className="page-sub">{String(ticket.data_payload.requester_email ?? '')}</p>
+      </div>
+      <div className="card card-pad">
+        <div className="card-sub">Description</div>
+        <p className="muted" style={{ margin: 0 }}>{body || 'No description provided.'}</p>
+      </div>
       {job ? (
-        <FsmTimeline
-          schema={TICKET_SCHEMA}
-          entity={{
-            current_state: job.current_state,
-            history: (history ?? []).map((h) => ({
-              from_state: h.from_state, to_state: h.to_state,
-              event_type: h.event_type, timestamp: h.timestamp,
-            })),
-          }}
-          onTransitionRequest={onTransition}
-        />
+        <div className="fsm-panel card card-pad">
+          <div className="card-sub">Workflow</div>
+          <FsmTimeline
+            schema={TICKET_SCHEMA}
+            entity={{
+              current_state: job.current_state,
+              history: (history ?? []).map((h) => ({
+                from_state: h.from_state, to_state: h.to_state,
+                event_type: h.event_type, timestamp: h.timestamp,
+              })),
+            }}
+            onTransitionRequest={onTransition}
+          />
+        </div>
       ) : (
-        <p>No workflow attached.</p>
+        <p className="muted">No workflow attached.</p>
       )}
-      {loading && <p>Transitioning…</p>}
+      {loading && <p className="loading">Transitioning…</p>}
     </div>
   );
 }

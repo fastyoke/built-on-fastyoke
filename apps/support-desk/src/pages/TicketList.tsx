@@ -19,30 +19,44 @@ export function TicketList() {
     refetch();
   }
 
-  if (loading) return <div>Loading tickets…</div>;
-  if (error) return <div style={{ color: 'crimson' }}>Error: {error.message}</div>;
+  if (loading) return <div className="loading">Loading tickets…</div>;
+  if (error) return <div className="error">Error: {error.message}</div>;
+
+  const rows = data?.records ?? [];
+  const priorityClass = (p: string) =>
+    p === 'high' ? 'badge badge-danger' : p === 'low' ? 'badge badge-info' : 'badge';
 
   return (
     <div>
-      <form onSubmit={onCreate} style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-        <input aria-label="subject" placeholder="Subject" value={subject}
+      <div className="page-head">
+        <h1 className="page-title">Tickets</h1>
+        <p className="page-sub">{rows.length} open · triage, assign, and resolve customer requests.</p>
+      </div>
+
+      <form onSubmit={onCreate} className="toolbar">
+        <input className="input" aria-label="subject" placeholder="Subject" value={subject}
           onChange={(e) => setSubject(e.target.value)} />
-        <input aria-label="requester email" placeholder="Requester email" value={email}
+        <input className="input" aria-label="requester email" placeholder="Requester email" value={email}
           onChange={(e) => setEmail(e.target.value)} />
-        <button type="submit" disabled={creating}>New ticket</button>
+        <button className="btn-primary" type="submit" disabled={creating}>New ticket</button>
       </form>
-      <table>
-        <thead><tr><th>Subject</th><th>Requester</th><th>Priority</th></tr></thead>
-        <tbody>
-          {(data?.records ?? []).map((r) => (
-            <tr key={r.id}>
-              <td><Link to={`/tickets/${r.id}`}>{String(r.data_payload.subject ?? '(no subject)')}</Link></td>
-              <td>{String(r.data_payload.requester_email ?? '')}</td>
-              <td>{String(r.data_payload.priority ?? '')}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      {rows.length === 0 ? (
+        <div className="empty">No tickets yet. Create one above to get started.</div>
+      ) : (
+        <table className="data-table">
+          <thead><tr><th>Subject</th><th>Requester</th><th>Priority</th></tr></thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.id}>
+                <td><Link to={`/tickets/${r.id}`}>{String(r.data_payload.subject ?? '(no subject)')}</Link></td>
+                <td className="muted">{String(r.data_payload.requester_email ?? '')}</td>
+                <td><span className={priorityClass(String(r.data_payload.priority ?? 'normal'))}>{String(r.data_payload.priority ?? 'normal')}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }

@@ -9,15 +9,18 @@ export function App() {
   return (
     <FastYokeProvider tenantId={cfg.tenantId} baseUrl={cfg.apiUrl} fetcher={buildFetcher(cfg.token)}>
       <BrowserRouter>
-        <header style={{ padding: 16, borderBottom: '1px solid #ddd' }}>
-          <Link to="/" style={{ fontWeight: 600, textDecoration: 'none' }}>Field Service</Link>
-        </header>
-        <main style={{ padding: 16 }}>
-          <Routes>
-            <Route path="/" element={<WorkOrderList />} />
-            <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
-          </Routes>
-        </main>
+        <div className="app-shell">
+          <header className="app-header">
+            <Link to="/" className="app-brand">Field Service</Link>
+            <span className="app-tag">built on FastYoke</span>
+          </header>
+          <main className="app-main">
+            <Routes>
+              <Route path="/" element={<WorkOrderList />} />
+              <Route path="/work-orders/:id" element={<WorkOrderDetail />} />
+            </Routes>
+          </main>
+        </div>
       </BrowserRouter>
     </FastYokeProvider>
   );

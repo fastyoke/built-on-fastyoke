@@ -1,0 +1,208 @@
+/* Shared design system for the built-on-fastyoke gallery apps.
+   Imported by each app's main.tsx. Light, modern SaaS look. Each app sets its
+   own --accent on <body data-app="…"> (see per-app main.tsx). */
+
+:root {
+  --accent: #6366f1;
+  --accent-weak: #eef2ff;
+  --accent-ink: #4338ca;
+
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #fbfbfd;
+  --border: #e6e8ec;
+  --border-strong: #d5d8de;
+  --text: #1a1f2b;
+  --text-2: #5b6472;
+  --text-3: #8b93a1;
+
+  --ok: #15803d;   --ok-bg: #dcfce7;
+  --warn: #b45309; --warn-bg: #fef3c7;
+  --info: #1d4ed8; --info-bg: #dbeafe;
+  --muted-bg: #eef0f3; --muted-fg: #4b5563;
+  --danger: #b42318; --danger-bg: #fee4e2;
+
+  --radius: 10px;
+  --radius-sm: 7px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Per-app accents (explicit ink/weak — no color-mix, for browser compat) */
+body[data-app="support-desk"]      { --accent: #2563eb; --accent-ink: #1d4ed8; --accent-weak: #eff6ff; }
+body[data-app="issue-board"]       { --accent: #7c3aed; --accent-ink: #6d28d9; --accent-weak: #f5f3ff; }
+body[data-app="last-mile-dispatch"]{ --accent: #ea580c; --accent-ink: #c2410c; --accent-weak: #fff7ed; }
+body[data-app="field-service"]     { --accent: #059669; --accent-ink: #047857; --accent-weak: #ecfdf5; }
+
+/* ---- Layout shell ---- */
+.app-shell { min-height: 100%; display: flex; flex-direction: column; }
+.app-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 24px; height: 56px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(1.4) blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.app-brand {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-weight: 650; font-size: 15px; letter-spacing: -0.01em;
+  color: var(--text); text-decoration: none;
+}
+.app-brand::before {
+  content: ""; width: 10px; height: 10px; border-radius: 3px;
+  background: var(--accent); box-shadow: 0 0 0 3px var(--accent-weak);
+}
+.app-tag {
+  margin-left: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+  text-transform: uppercase; color: var(--text-3);
+}
+.app-main { width: 100%; max-width: 940px; margin: 0 auto; padding: 28px 24px 64px; flex: 1; }
+
+/* ---- Page heads ---- */
+.page-head { margin: 0 0 20px; }
+.page-title { margin: 0; font-size: 22px; font-weight: 680; letter-spacing: -0.02em; }
+.page-sub { margin: 3px 0 0; color: var(--text-2); font-size: 13.5px; }
+.crumb { display: inline-block; margin-bottom: 14px; color: var(--text-2); text-decoration: none; font-size: 13px; }
+.crumb:hover { color: var(--accent-ink); }
+.crumb::before { content: "‹ "; }
+
+/* ---- Cards ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card-pad { padding: 18px 20px; }
+.card + .card { margin-top: 16px; }
+.card-title { margin: 0 0 2px; font-size: 15px; font-weight: 640; }
+.card-sub { margin: 0 0 14px; color: var(--text-2); font-size: 12.5px; }
+
+/* ---- Toolbar / create row ---- */
+.toolbar {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  padding: 14px 16px; margin-bottom: 18px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.toolbar .input { flex: 1 1 180px; }
+
+/* ---- Inputs ---- */
+.input, input:not([type="checkbox"]):not([type="radio"]), textarea, select {
+  width: 100%;
+  padding: 8px 11px;
+  font: inherit; color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color .12s, box-shadow .12s;
+}
+.input:focus, input:focus, textarea:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-weak);
+}
+.field { display: block; margin-bottom: 12px; }
+.field > span, .field-label { display: block; margin-bottom: 5px; font-size: 12.5px; font-weight: 600; color: var(--text-2); }
+
+/* ---- Buttons ---- */
+.btn, button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 14px;
+  font: inherit; font-weight: 600; font-size: 13.5px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .12s, border-color .12s, box-shadow .12s, opacity .12s;
+}
+.btn:hover, button:hover { background: var(--surface-2); border-color: var(--text-3); }
+.btn:disabled, button:disabled { opacity: .5; cursor: not-allowed; }
+.btn-primary, button[type="submit"] {
+  color: #fff; background: var(--accent); border-color: var(--accent);
+}
+.btn-primary:hover, button[type="submit"]:hover {
+  background: var(--accent-ink); border-color: var(--accent-ink);
+}
+.btn-danger { color: #fff; background: var(--danger); border-color: var(--danger); }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+.btn-ghost:hover { background: var(--muted-bg); border-color: transparent; }
+
+/* ---- Tables ---- */
+.data-table { width: 100%; border-collapse: separate; border-spacing: 0;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; box-shadow: var(--shadow); }
+.data-table thead th {
+  text-align: left; padding: 11px 16px;
+  font-size: 11.5px; font-weight: 650; letter-spacing: 0.03em; text-transform: uppercase;
+  color: var(--text-3); background: var(--surface-2); border-bottom: 1px solid var(--border);
+}
+.data-table tbody td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { background: var(--surface-2); }
+.data-table a { color: var(--accent-ink); font-weight: 600; text-decoration: none; }
+.data-table a:hover { text-decoration: underline; }
+
+/* ---- Badges ---- */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 9px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 650; letter-spacing: 0.01em;
+  background: var(--muted-bg); color: var(--muted-fg);
+}
+.badge-ok   { background: var(--ok-bg);   color: var(--ok); }
+.badge-warn { background: var(--warn-bg); color: var(--warn); }
+.badge-info { background: var(--info-bg); color: var(--info); }
+.badge-danger { background: var(--danger-bg); color: var(--danger); }
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .85; }
+
+/* ---- Misc ---- */
+.muted { color: var(--text-2); }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.row { display: flex; align-items: center; gap: 10px; }
+.spread { justify-content: space-between; }
+.empty {
+  text-align: center; padding: 44px 20px; color: var(--text-2);
+  background: var(--surface); border: 1px dashed var(--border-strong); border-radius: var(--radius);
+}
+.loading { color: var(--text-2); padding: 8px 2px; }
+.error { color: var(--danger); background: var(--danger-bg); border: 1px solid var(--danger-bg);
+  padding: 10px 14px; border-radius: var(--radius-sm); }
+
+/* ---- Modal ---- */
+.modal-scrim {
+  position: fixed; inset: 0; z-index: 50;
+  display: grid; place-items: center; padding: 20px;
+  background: rgba(16, 24, 40, 0.44); backdrop-filter: blur(2px);
+}
+.modal {
+  width: 100%; max-width: 420px;
+  background: var(--surface); border-radius: 14px; box-shadow: var(--shadow-md);
+  padding: 22px 22px 18px;
+}
+.modal h2 { margin: 0 0 4px; font-size: 17px; font-weight: 680; }
+.modal .modal-sub { margin: 0 0 16px; color: var(--text-2); font-size: 13px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+
+/* ---- FSM timeline (SDK component) polish ---- */
+.fsm-panel { margin-top: 18px; }
+.fsm-panel button {
+  font-size: 12.5px; padding: 6px 12px; margin: 0 6px 6px 0;
+  background: var(--accent-weak); color: var(--accent-ink); border-color: transparent;
+}
+.fsm-panel button:hover { background: var(--accent); color: #fff; border-color: transparent; }

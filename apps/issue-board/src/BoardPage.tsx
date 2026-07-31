@@ -11,15 +11,15 @@ export function BoardPage() {
   const { componentsByBlockType, loading } = useExtensionRegistry();
   const Kanban = componentsByBlockType.get(BLOCK_TYPE);
 
-  if (loading) return <div style={{ padding: 16 }}>Loading the Kanban extension…</div>;
+  if (loading) return <div className="loading">Loading the Kanban extension…</div>;
   if (!Kanban) {
     return (
-      <div style={{ padding: 16 }}>
+      <div className="empty">
         Kanban extension not installed. Run <code>pnpm provision</code> to upload it, then reload.
       </div>
     );
   }
-  return <Kanban config={BOARD_CONFIG} />;
+  return <div className="card card-pad">{<Kanban config={BOARD_CONFIG} />}</div>;
 }
 
 // FALLBACK (only if registry loading is blocked at runtime — same component, imported directly):

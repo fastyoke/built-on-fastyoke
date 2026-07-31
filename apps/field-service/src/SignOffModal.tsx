@@ -19,32 +19,30 @@ export function SignOffModal({ recordLabel, submitting, error, onSubmit, onClose
   const canSubmit = password !== '' && meaning.trim() !== '' && consent && !submitting;
 
   return (
-    <div role="dialog" aria-label="Electronic signature" style={{ position: 'fixed', inset: 0,
-      background: 'rgba(9,30,66,.5)', display: 'grid', placeItems: 'center' }}>
-      <div style={{ background: '#fff', borderRadius: 8, padding: 20, width: 420 }}>
-        <h2 style={{ marginTop: 0 }}>Electronic signature</h2>
-        <p style={{ color: '#5e6c84', fontSize: 13 }}>
+    <div role="dialog" aria-label="Electronic signature" className="modal-scrim">
+      <div className="modal">
+        <h2>Electronic signature</h2>
+        <p className="modal-sub">
           Signing off <b>{recordLabel}</b>. This applies a 21 CFR Part 11 signature, sealed and audited by the server.
         </p>
-        <label style={{ display: 'block', marginBottom: 8 }}>
-          Meaning
-          <select value={meaning} onChange={(e) => setMeaning(e.target.value)} style={{ display: 'block', width: '100%' }}>
+        <label className="field">
+          <span className="field-label">Meaning</span>
+          <select value={meaning} onChange={(e) => setMeaning(e.target.value)}>
             {MEANINGS.map((m) => <option key={m} value={m}>{m}</option>)}
           </select>
         </label>
-        <label style={{ display: 'block', marginBottom: 8 }}>
-          Password (re-authentication)
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-            autoComplete="off" style={{ display: 'block', width: '100%' }} />
+        <label className="field">
+          <span className="field-label">Password (re-authentication)</span>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="off" />
         </label>
-        <label style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
-          <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-          I understand this electronic signature is legally binding.
+        <label className="row" style={{ gap: 8, marginBottom: 4, cursor: 'pointer' }}>
+          <input type="checkbox" style={{ width: 'auto' }} checked={consent} onChange={(e) => setConsent(e.target.checked)} />
+          <span>I understand this electronic signature is legally binding.</span>
         </label>
-        {error && <div style={{ color: 'crimson', marginBottom: 8 }}>{error}</div>}
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+        {error && <div className="error" style={{ marginTop: 10 }}>{error}</div>}
+        <div className="modal-actions">
           <button onClick={onClose} disabled={submitting}>Cancel</button>
-          <button onClick={() => onSubmit({ password, meaning, consent })} disabled={!canSubmit}>Sign & complete</button>
+          <button className="btn-primary" onClick={() => onSubmit({ password, meaning, consent })} disabled={!canSubmit}>Sign & complete</button>
         </div>
       </div>
     </div>

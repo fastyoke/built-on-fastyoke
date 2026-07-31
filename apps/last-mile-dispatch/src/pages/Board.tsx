@@ -13,8 +13,8 @@ export function Board() {
   const { data: deliveries, loading, error } = useEntities('delivery', { pageSize: 100 });
   const { data: jobs } = useJobs(schemaId ? { schemaId } : {});
 
-  if (loading) return <div>Loading deliveries…</div>;
-  if (error) return <div style={{ color: 'crimson' }}>Error: {error.message}</div>;
+  if (loading) return <div className="loading">Loading deliveries…</div>;
+  if (error) return <div className="error">Error: {error.message}</div>;
 
   const stateByRecord = new Map((jobs ?? []).map((j) => [j.context_record_id, j.current_state]));
   const rows = (deliveries?.records ?? []).map((r) => ({
@@ -28,20 +28,29 @@ export function Board() {
   const markers: MapMarker[] = rows.map((r) => ({ id: r.id, label: r.reference, x: r.x, y: r.y, state: r.state }));
 
   return (
-    <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-      <MapPanel markers={markers} />
-      <table>
-        <thead><tr><th>Reference</th><th>Driver</th><th>State</th></tr></thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.id}>
-              <td><Link to={`/deliveries/${r.id}`}>{r.reference}</Link></td>
-              <td>{r.driver}</td>
-              <td><span style={{ color: stateColor(r.state), fontWeight: 600 }}>{r.state}</span></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <div className="page-head">
+        <h1 className="page-title">Deliveries</h1>
+        <p className="page-sub">{rows.length} active · live map + FSM-driven delivery states.</p>
+      </div>
+      <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        <div className="card card-pad" style={{ flex: '0 0 auto' }}>
+          <div className="card-sub">Route map</div>
+          <MapPanel markers={markers} />
+        </div>
+        <table className="data-table" style={{ flex: 1, minWidth: 340 }}>
+          <thead><tr><th>Reference</th><th>Driver</th><th>State</th></tr></thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.id}>
+                <td><Link to={`/deliveries/${r.id}`}>{r.reference}</Link></td>
+                <td className="muted">{r.driver}</td>
+                <td><span className="badge" style={{ color: stateColor(r.state) }}>{r.state}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
