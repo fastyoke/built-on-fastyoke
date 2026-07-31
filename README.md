@@ -5,12 +5,14 @@ locally against a real FastYoke backend — **no cloud account**.
 
 ## Quick start
 ```bash
-docker build -t fastyoke/backend:local .   # once, from the FastYoke backend repo (or pull the published image)
 pnpm install
-pnpm backend:up        # boots the backend (sandbox mode) on :8080
+pnpm backend:up        # pulls ghcr.io/fastyoke/backend:sandbox and boots it (sandbox mode) on :8080
 pnpm provision         # signs up a demo tenant + installs schemas/seed, writes .env.local
 pnpm dev               # boots the app dev servers
 ```
+
+The backend is the prebuilt, multi-arch **`ghcr.io/fastyoke/backend:sandbox`**
+image (amd64 + arm64) — `docker compose up` pulls it, no local build required.
 
 ## Apps
 | App | Port | Hero primitive | Status |

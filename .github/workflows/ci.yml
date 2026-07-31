@@ -14,6 +14,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm build
       - run: pnpm --filter @gallery/support-desk test
-      # e2e requires the backend image; enable once fastyoke/backend:local is pullable:
+      # e2e pulls ghcr.io/fastyoke/backend:sandbox; enable once the specs are
+      # de-flaked (create->refresh races; dragTo doesn't fire native HTML5 drag):
       # - run: pnpm backend:up && pnpm provision
       # - run: pnpm exec playwright install --with-deps chromium && pnpm e2e
