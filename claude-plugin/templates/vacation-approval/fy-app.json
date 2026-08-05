@@ -1,0 +1,28 @@
+{
+  "fy_app_spec_version": "1",
+  "name": "vacation-approval",
+  "extension_id": "ex.vacation-approval",
+  "entities": [
+    {
+      "name": "VacationRequest",
+      "fields": [
+        { "name": "requester", "type": "string" },
+        { "name": "start_date", "type": "string" },
+        { "name": "end_date", "type": "string" },
+        { "name": "reason", "type": "string" },
+        { "name": "role", "type": "string" },
+        { "name": "notes", "type": "number" }
+      ],
+      "fsm": {
+        "initial_state": "requested",
+        "states": ["requested", "in_review", "approved", "denied"],
+        "transitions": [
+          { "from": "requested", "event": "submit", "to": "in_review", "guard": null },
+          { "from": "in_review", "event": "approve", "to": "approved", "guard": { "==": [{ "var": "role" }, "manager"] } },
+          { "from": "in_review", "event": "deny", "to": "denied", "guard": null },
+          { "from": "in_review", "event": "note", "to": "in_review", "guard": { "<": [{ "var": "notes" }, 5] } }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "fastyoke",
+  "owner": {
+    "name": "FastYoke"
+  },
+  "plugins": [
+    {
+      "name": "fastyoke",
+      "source": "./claude-plugin",
+      "description": "Build FastYoke apps with Claude: scaffold an app, run it locally, and verify a first workflow transition."
+    }
+  ]
+}

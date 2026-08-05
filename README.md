@@ -3,6 +3,20 @@
 An open-source gallery of complex apps built on the FastYoke SDK. Everything runs
 locally against a real FastYoke backend — **no cloud account**.
 
+## Build your own with Claude
+
+This repo doubles as a **Claude Code plugin marketplace**. Add it, install the
+plugin, and Claude scaffolds a new FastYoke app, runs it on the local runtime, and
+verifies a first workflow transition for you:
+
+```
+/plugin marketplace add fastyoke/built-on-fastyoke
+/plugin install fastyoke
+/fy-new-app
+```
+
+The plugin source lives in [`claude-plugin/`](claude-plugin/).
+
 ## Quick start
 ```bash
 docker build -t fastyoke/backend:local .   # once, from the FastYoke backend repo (or pull the published image)
