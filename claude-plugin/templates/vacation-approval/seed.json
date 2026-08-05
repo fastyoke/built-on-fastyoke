@@ -1,0 +1,62 @@
+{
+  "tenant": { "id": "local", "name": "Vacation Approval Demo" },
+  "users": [
+    { "email": "manager@fastyoke.dev", "role": "admin" }
+  ],
+  "entity_kinds": [
+    {
+      "name": "VacationRequest",
+      "schema": {
+        "fields": [
+          { "key": "requester", "type": "string" },
+          { "key": "start_date", "type": "string" },
+          { "key": "end_date", "type": "string" },
+          { "key": "reason", "type": "string" },
+          { "key": "role", "type": "string" },
+          { "key": "notes", "type": "number" }
+        ]
+      }
+    }
+  ],
+  "entity_records": {
+    "VacationRequest": [
+      {
+        "id": "vac_1",
+        "data_payload": {
+          "requester": "Jamie Rivera",
+          "start_date": "2026-09-01",
+          "end_date": "2026-09-05",
+          "reason": "Family trip",
+          "role": "manager",
+          "notes": 0
+        }
+      }
+    ]
+  },
+  "fsm_schemas": [
+    {
+      "id": "sch-vacation-approval",
+      "name": "vacation-approval",
+      "entity_name": "VacationRequest",
+      "schema_json": {
+        "name": "vacation-approval",
+        "initial_state": "requested",
+        "states": ["requested", "in_review", "approved", "denied"],
+        "transitions": [
+          { "event": "submit", "from": "requested", "to": "in_review" },
+          { "event": "approve", "from": "in_review", "to": "approved", "guard": { "==": [{ "var": "role" }, "manager"] } },
+          { "event": "deny", "from": "in_review", "to": "denied" },
+          { "event": "note", "from": "in_review", "to": "in_review", "guard": { "<": [{ "var": "notes" }, 5] } }
+        ]
+      }
+    }
+  ],
+  "jobs": [
+    {
+      "id": "job-vac_1",
+      "schema_id": "sch-vacation-approval",
+      "current_state": "requested",
+      "context_record_id": "vac_1"
+    }
+  ]
+}

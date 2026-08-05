@@ -1,0 +1,10 @@
+{
+  "initial_state": "requested",
+  "states": ["requested", "in_review", "approved", "denied"],
+  "transitions": [
+    { "event": "submit", "from": "requested", "to": "in_review" },
+    { "event": "approve", "from": "in_review", "to": "approved", "guard": { "==": [{ "var": "role" }, "manager"] } },
+    { "event": "deny", "from": "in_review", "to": "denied" },
+    { "event": "note", "from": "in_review", "to": "in_review", "guard": { "<": [{ "var": "notes" }, 5] } }
+  ]
+}

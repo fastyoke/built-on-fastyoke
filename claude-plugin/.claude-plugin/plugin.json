@@ -1,0 +1,6 @@
+{
+  "name": "fastyoke",
+  "version": "0.1.0",
+  "description": "Build FastYoke apps with Claude: scaffold an app, run it locally, and verify a first workflow transition.",
+  "author": { "name": "FastYoke" }
+}
